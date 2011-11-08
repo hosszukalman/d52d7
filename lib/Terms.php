@@ -12,7 +12,7 @@ class Terms extends Importer {
   function __construct() {
     parent::__construct();
 
-    $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_data td WHERE td.vid = :vid");
+    $this->getOldTerms = $this->dbhImport->prepare("SELECT td.*, th.parent FROM term_data td LEFT JOIN term_hierarchy th USING(tid) WHERE td.vid = :vid");
   }
 
   public function execute() {
