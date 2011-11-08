@@ -18,6 +18,9 @@ class Terms extends Importer {
   public function execute() {
     // Save Építészek -> vezető tervezők
     $this->saveTermsFromVocab(13, 12);
+
+    // Save Helyszín
+    $this->saveTermsFromVocab(27, 6);
   }
 
   /**
@@ -46,7 +49,7 @@ class Terms extends Importer {
   public function deleteAll() {
     $query = db_select('taxonomy_term_data', 'td');
     $query
-      ->condition('td.vid', array(12), 'IN')
+      ->condition('td.vid', array(12, 6), 'IN')
       ->fields('td', array('tid'));
     $result = $query->execute()->fetchAll();
 
