@@ -30,6 +30,9 @@ class Terms extends Importer {
 
     // Save Dosszié
     $this->saveTermsFromVocab(7, 5);
+
+    // Save Szerzők
+    $this->saveTermsFromVocab(14, 15);
   }
 
   /**
@@ -64,7 +67,7 @@ class Terms extends Importer {
   public function deleteAll() {
     $query = db_select('taxonomy_term_data', 'td');
     $query
-      ->condition('td.vid', array(12, 6, 2, 3, 5), 'IN')
+      ->condition('td.vid', array(12, 6, 2, 3, 5, 15), 'IN')
       ->fields('td', array('tid'));
     $result = $query->execute()->fetchAll();
 
