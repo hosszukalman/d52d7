@@ -16,7 +16,8 @@ class Terms extends Importer {
   }
 
   public function execute() {
-    ;
+    // Save Építészek -> vezető tervezők
+    $this->saveTermsFromVocab(13, 12);
   }
 
   /**
