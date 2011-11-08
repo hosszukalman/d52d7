@@ -44,6 +44,18 @@ class Terms extends Importer {
   }
 
   public function deleteAll() {
-    echo 'Delete terms from DB';
+    $query = db_select('taxonomy_term_data', 'td');
+    $query
+      ->condition('td.vid', array(12), 'IN')
+      ->fields('td', array('tid'));
+    $result = $query->execute()->fetchAll();
+
+    $counter = 0;
+    foreach ($result as $term) {
+      taxonomy_term_delete($term->tid);
+      echo $counter++ . PHP_EOL;
+    }
+
+
   }
 }
