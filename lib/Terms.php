@@ -19,12 +19,26 @@ class Terms extends Importer {
     ;
   }
 
-  private function saveTermsFromVocab($vid) {
-    $this->getOldTerms->execute(array(':vid' => $vid));
+  /**
+   * Save term from the old DB to the new.
+   *
+   * @param int $oldVid
+   *   The vid from the old DB.
+   * @param int $newVid
+   *   The vid in the new DB.
+   */
+  private function saveTermsFromVocab($oldVid, $newVid) {
+    $this->getOldTerms->execute(array(':vid' => $oldVid));
     $result = $this->getOldTerms->fetchAll(PDO::FETCH_ASSOC);
+
+    $counter = 0;
     foreach ($result as $row) {
-      var_dump($row);
-      exit;
+      unset($row['tid']);
+      $row['vid'] = $newVid;
+      $row = (object)($row);
+      taxonomy_term_save($row);
+
+      echo $counter++ . PHP_EOL;
     }
   }
 
