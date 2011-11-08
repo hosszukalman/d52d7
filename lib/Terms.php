@@ -12,7 +12,7 @@ class Terms extends Importer {
   function __construct() {
     parent::__construct();
 
-    $this->getOldTerms = $this->dbhImport->prepare("SELECT td.*, th.parent FROM term_data td LEFT JOIN term_hierarchy th USING(tid) WHERE td.vid = :vid");
+    $this->getOldTerms = $this->dbhImport->prepare("SELECT td.*, th.parent FROM term_data td LEFT JOIN term_hierarchy th USING(tid) WHERE td.vid = :vid ORDER BY th.parent, td.weight");
   }
 
   public function execute() {
@@ -21,6 +21,9 @@ class Terms extends Importer {
 
     // Save Helyszín
     $this->saveTermsFromVocab(27, 6);
+
+    // Save Főtéma
+    $this->saveTermsFromVocab(2, 2);
   }
 
   /**
@@ -32,15 +35,21 @@ class Terms extends Importer {
    *   The vid in the new DB.
    */
   private function saveTermsFromVocab($oldVid, $newVid) {
+    $termMap = array();
     $this->getOldTerms->execute(array(':vid' => $oldVid));
     $result = $this->getOldTerms->fetchAll(PDO::FETCH_ASSOC);
 
     $counter = 0;
     foreach ($result as $row) {
+      $tidBackup = $row['tid'];
+
       unset($row['tid']);
       $row['vid'] = $newVid;
+      $row['parent'] = isset($termMap[$row['parent']]) ? $termMap[$row['parent']] : 0;
       $row = (object)($row);
       taxonomy_term_save($row);
+
+      $termMap[$tidBackup] = $row->tid;
 
       echo $counter++ . PHP_EOL;
     }
@@ -49,7 +58,7 @@ class Terms extends Importer {
   public function deleteAll() {
     $query = db_select('taxonomy_term_data', 'td');
     $query
-      ->condition('td.vid', array(12, 6), 'IN')
+      ->condition('td.vid', array(12, 6, 2), 'IN')
       ->fields('td', array('tid'));
     $result = $query->execute()->fetchAll();
 
