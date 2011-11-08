@@ -24,6 +24,9 @@ class Terms extends Importer {
 
     // Save Főtéma
     $this->saveTermsFromVocab(2, 2);
+
+    // Save Fókusztéma
+    $this->saveTermsFromVocab(8, 3);
   }
 
   /**
@@ -58,7 +61,7 @@ class Terms extends Importer {
   public function deleteAll() {
     $query = db_select('taxonomy_term_data', 'td');
     $query
-      ->condition('td.vid', array(12, 6, 2), 'IN')
+      ->condition('td.vid', array(12, 6, 2, 3), 'IN')
       ->fields('td', array('tid'));
     $result = $query->execute()->fetchAll();
 
