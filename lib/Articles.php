@@ -47,6 +47,7 @@ class Articles extends Nodes {
       $node->comment = $oldContent['comment'];
       $node->promote = $oldContent['promote'];
       $node->sticky = $oldContent['sticky'];
+      $node->created = $oldContent['created']; // Not working
 
       // Fields
       $node->body[LANGUAGE_NONE][0]['value'] = $oldContent['field_trzs_value'];
@@ -63,6 +64,10 @@ class Articles extends Nodes {
       $this->saveNodeToConnectionTable($oldContent['nid'], $node->nid);
 
       echo $counter++ . PHP_EOL;
+
+      if ($counter >= 20) {
+        exit;
+      }
     }
   }
 }
