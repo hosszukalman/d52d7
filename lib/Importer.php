@@ -5,9 +5,15 @@ abstract class Importer extends Drupal {
    */
   protected $dbhImport;
 
+  /**
+   * @var PDO
+   */
+  protected $dbhConnection;
+
   public function __construct() {
     // DBH
     $this->dbhImport = Registry::get('dbhImport');
+    $this->dbhImport = Registry::get('dbhConnection');
   }
 
   /**
