@@ -60,26 +60,9 @@ class Terms extends Importer {
 
       $termMap[$tidBackup] = $row->tid;
 
+      $this->dbhConnection->query("INSERT INTO terms VALUES ($tidBackup, $row->tid)");
+
       echo $counter++ . PHP_EOL;
-    }
-
-    $counter = 0;
-    foreach ($termMap as $oldTid => $newTid) {
-      //Query start
-      if ($counter == 0) {
-        $sqlString = 'INSERT INTO terms VALUES (';
-      }
-
-      // Query values
-      if ($counter++ < 100) {
-        $sqlString .= $oldTid . ', ' . $newTid;
-      }
-      else {
-        // Query fetch
-        $sqlString .= ')';
-        $this->dbhConnection->query($sqlString);
-        $counter = 0;
-      }
     }
   }
 
