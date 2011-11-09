@@ -11,7 +11,9 @@ error_reporting(E_ALL | E_STRICT);
  * @param type $class_name
  */
 function __autoload($class_name) {
-  include 'lib/' . $class_name . '.php';
+  if (file_exists('lib/' . $class_name . '.php')) {
+    include 'lib/' . $class_name . '.php';
+  }
 }
 
 try {
