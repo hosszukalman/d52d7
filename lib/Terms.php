@@ -62,6 +62,25 @@ class Terms extends Importer {
 
       echo $counter++ . PHP_EOL;
     }
+
+    $counter = 0;
+    foreach ($termMap as $oldTid => $newTid) {
+      //Query start
+      if ($counter == 0) {
+        $sqlString = 'INSERT INTO terms VALUES (';
+      }
+
+      // Query values
+      if ($counter++ < 100) {
+        $sqlString .= $oldTid . ', ' . $newTid;
+      }
+      else {
+        // Query fetch
+        $sqlString .= ')';
+        $this->dbhConnection->query($sqlString);
+        $counter = 0;
+      }
+    }
   }
 
   public function deleteAll() {
