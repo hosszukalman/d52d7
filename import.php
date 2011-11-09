@@ -21,8 +21,14 @@ try {
   $password = 'ccMeLHhnTrSBbtrw';
   $dbhImport = new PDO($dsn, $user, $password);
 
+  $dsn = 'mysql:dbname=epiteszforum_old2new_conection;host=localhost';
+  $user = 'epiteszforum';
+  $password = 'ccMeLHhnTrSBbtrw';
+  $dbhConnection = new PDO($dsn, $user, $password);
+
   // Store DB connections to Registry
   Registry::set('dbhImport', $dbhImport);
+  Registry::set('dbhConnection', $dbhConnection);
 
   $dbhImport->exec('SET NAMES "UTF8"');
 
