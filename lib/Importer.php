@@ -13,7 +13,7 @@ abstract class Importer extends Drupal {
   public function __construct() {
     // DBH
     $this->dbhImport = Registry::get('dbhImport');
-    $this->dbhImport = Registry::get('dbhConnection');
+    $this->dbhConnection = Registry::get('dbhConnection');
   }
 
   /**
