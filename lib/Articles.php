@@ -2,7 +2,7 @@
 /**
  * Import terms
  */
-class Articles extends Importer {
+class Articles extends Nodes {
 
   function __construct() {
     parent::__construct();
@@ -19,7 +19,6 @@ class Articles extends Importer {
       LEFT JOIN content_field_bevezet cfb USING(vid)
       LEFT JOIN content_field_eng_abstract cfea USING(vid)
       WHERE n.type = 'normal_tartalom' ORDER BY n.created", PDO::FETCH_ASSOC) as $oldContent) {
-
 
     }
   }
