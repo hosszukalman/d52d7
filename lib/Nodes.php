@@ -13,6 +13,6 @@ class Nodes extends Importer {
   }
 
   protected function saveNodeToConnectionTable($oldNid, $newNid) {
-    $this->dbhConnection->query("INSERT INTO terms VALUES ($oldNid, $newNid)");
+    $this->dbhConnection->query("INSERT INTO nodes VALUES ($oldNid, $newNid)");
   }
 }
