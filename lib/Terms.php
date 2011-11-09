@@ -84,6 +84,7 @@ class Terms extends Importer {
   }
 
   public function deleteAll() {
+    // Delete from Drupal
     $query = db_select('taxonomy_term_data', 'td');
     $query
       ->condition('td.vid', array(12, 6, 2, 3, 5, 15), 'IN')
@@ -96,6 +97,8 @@ class Terms extends Importer {
       echo $counter++ . PHP_EOL;
     }
 
+    // Delete from connection DB.
+    $this->dbhConnection->exec('TRUNCATE TABLE terms');
 
   }
 }
