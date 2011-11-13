@@ -4,9 +4,39 @@
  */
 class Articles extends Nodes {
 
+  private $termMap;
+
+  /**
+   * @var PDOStatement
+   */
+  private $getNewTerms;
+
+  /**
+   * @var PDOStatement
+   */
+  private $getOldTerms;
+
   function __construct() {
     parent::__construct();
 
+    $this->getNewTerms = $this->dbhConnection->prepare("SELECT t.new_tid FROM terms t WHERE t.old_tid = :old_tid");
+    $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
+      INNER JOIN term_data td USING(tid)
+      WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
+
+    foreach ($this->dbhImport->query("SELECT td.* FROM node n
+      RIGHT JOIN term_node tn USING(nid)
+      RIGHT JOIN term_data td ON (tn.tid = td.tid)
+      WHERE n.type = 'normal_tartalom' AND td.vid IN (13, 2, 8, 7, 14)
+      GROUP BY td.tid ORDER BY n.created", PDO::FETCH_ASSOC) as $term) {
+
+      $this->getNewTerms->execute(array(':old_tid' => $term['tid']));
+      $result = $this->getNewTerms->fetch(PDO::FETCH_ASSOC);
+      if (!empty($result)) {
+//        $this->termMap[$term['vid']][$term['tid']] = $result['new_tid'];
+        $this->termMap[$term['tid']] = $result['new_tid'];
+      }
+    }
   }
 
   public function deleteAll() {
@@ -58,6 +88,21 @@ class Articles extends Nodes {
 
       $node->field_eng_summory[LANGUAGE_NONE][0]['value'] = $oldContent['field_eng_abstract_value'];
       $node->field_eng_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
+
+      // Taxonomy terms
+      $this->getOldTerms->execute(array(':nid' => $oldContent['nid']));
+      $terms = $this->getOldTerms->fetchAll(PDO::FETCH_ASSOC);
+
+      foreach ($terms as $term) {
+        switch ($term['vid']) {
+          case 14:
+            // Szerzők
+            $node->field_authors_term[LANGUAGE_NONE][] = array(
+              'tid' => $this->termMap[$term['tid']],
+            );
+            break;
+        }
+      }
 
       node_save($node);
 
