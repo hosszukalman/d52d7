@@ -122,6 +122,13 @@ class Articles extends Nodes {
               'tid' => $this->termMap[$term['tid']],
             );
             break;
+
+          case 13:
+            // Építészek
+            $node->field_lead_architect_tag[LANGUAGE_NONE][] = array(
+              'tid' => $this->termMap[$term['tid']],
+            );
+            break;
         }
       }
 
