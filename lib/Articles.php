@@ -108,6 +108,13 @@ class Articles extends Nodes {
               'tid' => $this->termMap[$term['tid']],
             );
             break;
+
+          case 2:
+            // Főtéma
+            $node->field_primary_article[LANGUAGE_NONE][] = array(
+              'tid' => $this->termMap[$term['tid']],
+            );
+            break;
         }
       }
 
