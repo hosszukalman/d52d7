@@ -101,6 +101,13 @@ class Articles extends Nodes {
               'tid' => $this->termMap[$term['tid']],
             );
             break;
+
+          case 7:
+            // Dosszié
+            $node->field_dossier[LANGUAGE_NONE][] = array(
+              'tid' => $this->termMap[$term['tid']],
+            );
+            break;
         }
       }
 
