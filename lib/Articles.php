@@ -1,6 +1,10 @@
 <?php
 /**
  * Import terms
+ *
+ * @todo attachment -> field
+ * @todo change imagelist filters to gallery picker filter
+ * @todo attach reference gallery
  */
 class Articles extends Nodes {
 
