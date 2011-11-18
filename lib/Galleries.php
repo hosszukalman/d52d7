@@ -7,7 +7,21 @@ class Galleries extends Importer {
   }
 
   public function deleteAll() {
+    // Delete from Drupal
+    $query = db_select('node', 'n');
+    $query
+      ->condition('n.type', 'media_gallery')
+      ->fields('n', array('nid'));
+    $result = $query->execute()->fetchAll();
 
+    $counter = 0;
+    foreach ($result as $node) {
+      node_delete($node->nid);
+      echo $counter++ . PHP_EOL;
+    }
+
+    // Delete from connection DB.
+    $this->dbhConnection->exec('TRUNCATE TABLE galleries');
   }
 
   public function execute() {
