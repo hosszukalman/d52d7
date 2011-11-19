@@ -3,7 +3,6 @@
  * Import terms
  *
  * @todo attachment -> field
- * @todo add main image
  */
 class Articles extends Nodes {
 
