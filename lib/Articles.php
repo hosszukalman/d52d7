@@ -20,10 +20,16 @@ class Articles extends Nodes {
    */
   private $getOldTerms;
 
+  /**
+   * @var PDOStatement
+   */
+  private $getRelatedGallery;
+
   function __construct() {
     parent::__construct();
 
     $this->getNewTerms = $this->dbhConnection->prepare("SELECT t.new_tid FROM terms t WHERE t.old_tid = :old_tid");
+    $this->getRelatedGallery = $this->dbhConnection->prepare("SELECT g.gallery_nid FROM galleries g WHERE g.old_nid = :old_nid");
     $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
       INNER JOIN term_data td USING(tid)
       WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
@@ -92,6 +98,13 @@ class Articles extends Nodes {
 
       $node->field_eng_summory[LANGUAGE_NONE][0]['value'] = $oldContent['field_eng_abstract_value'];
       $node->field_eng_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
+
+      // Related gallery
+      $this->getRelatedGallery->execute(array(':old_nid' => $oldContent['nid']));
+      $related_gallery = $this->getRelatedGallery->fetch(PDO::FETCH_ASSOC);
+      if ($related_gallery) {
+        $node->field_related_gallery[LANGUAGE_NONE][0]['nid'] = $related_gallery['gallery_nid'];
+      }
 
       // Taxonomy terms
       $this->getOldTerms->execute(array(':nid' => $oldContent['nid']));
