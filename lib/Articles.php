@@ -196,4 +196,8 @@ class Articles extends Nodes {
     // Replace the finded patterns with the links
     return str_replace($search, $replace, $text);
   }
+
+  protected function mainImage(&$text) {
+
+  }
 }
