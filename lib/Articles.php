@@ -29,12 +29,18 @@ class Articles extends Nodes {
    */
   private $getNewImage;
 
+  /**
+   * @var PDOStatement
+   */
+  private $getImageData;
+
   function __construct() {
     parent::__construct();
 
     $this->getNewTerms = $this->dbhConnection->prepare("SELECT t.new_tid FROM terms t WHERE t.old_tid = :old_tid");
     $this->getRelatedGallery = $this->dbhConnection->prepare("SELECT g.gallery_nid FROM galleries g WHERE g.old_nid = :old_nid");
     $this->getNewImage = $this->dbhConnection->prepare("SELECT gi.* FROM gallery_images gi WHERE gi.old_image_id = :old_image_id");
+    $this->getImageData = $this->dbhImport->prepare("SELECT i.* FROM imagelist i WHERE img_id = :img_id");
     $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
       INNER JOIN term_data td USING(tid)
       WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
@@ -98,11 +104,19 @@ class Articles extends Nodes {
       $node->body[LANGUAGE_NONE][0]['value'] = $this->galleryFilter($oldContent['field_trzs_value']);
       $node->body[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
 
-      $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $oldContent['field_bevezet_value'];
+      $summary = $oldContent['field_bevezet_value'];
+      $mainImageUrl = $this->mainImage($summary);
+
+      $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $summary;
       $node->field_hun_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
 
       $node->field_eng_summory[LANGUAGE_NONE][0]['value'] = $oldContent['field_eng_abstract_value'];
       $node->field_eng_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
+
+      if ($mainImageUrl) {
+        $mainImageFile = media_parse_to_file($mainImageUrl);
+        $node->field_leading_picture[LANGUAGE_NONE][0] = (array)($mainImageFile);
+      }
 
       // Related gallery
       $this->getRelatedGallery->execute(array(':old_nid' => $oldContent['nid']));
@@ -170,7 +184,6 @@ class Articles extends Nodes {
     // Find and replace arrays.
     $search = array();
     $replace = array();
-    // [imagelist|imgid=31181|name=hy5xm3_bg_allo.jpg|align=left|title=|show=1]
 
     // Regular expression
     $finds = preg_match_all('/\[imagelist\|imgid=([0-9]*)[^\]]*\]/', $text, $matches);
@@ -203,6 +216,17 @@ class Articles extends Nodes {
 
     if ($finds) {
       $text = str_replace($matches[0], '', $text);
+
+      // Select the the image data
+      $this->getImageData->execute(array(':img_id' => $matches[1]));
+      $imageData = $this->getImageData->fetch(PDO::FETCH_ASSOC);
+
+      if ($imageData) {
+//        return 'sites/default/' . $imageData['image'];
+        return 'sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg';
+      }
     }
+
+    return FALSE;
   }
 }
