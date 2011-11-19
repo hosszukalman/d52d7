@@ -3,7 +3,6 @@
  * Import terms
  *
  * @todo attachment -> field
- * @todo change imagelist filters to gallery picker filter
  * @todo add main image
  */
 class Articles extends Nodes {
