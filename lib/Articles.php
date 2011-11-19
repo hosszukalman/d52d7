@@ -25,11 +25,17 @@ class Articles extends Nodes {
    */
   private $getRelatedGallery;
 
+  /**
+   * @var PDOStatement
+   */
+  private $getNewImage;
+
   function __construct() {
     parent::__construct();
 
     $this->getNewTerms = $this->dbhConnection->prepare("SELECT t.new_tid FROM terms t WHERE t.old_tid = :old_tid");
     $this->getRelatedGallery = $this->dbhConnection->prepare("SELECT g.gallery_nid FROM galleries g WHERE g.old_nid = :old_nid");
+    $this->getNewImage = $this->dbhConnection->prepare("SELECT gi.* FROM gallery_images gi WHERE gi.old_image_id = :old_image_id");
     $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
       INNER JOIN term_data td USING(tid)
       WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
@@ -90,7 +96,7 @@ class Articles extends Nodes {
       $node->created = $oldContent['created']; // Not working
 
       // Fields
-      $node->body[LANGUAGE_NONE][0]['value'] = $oldContent['field_trzs_value'];
+      $node->body[LANGUAGE_NONE][0]['value'] = $this->galleryFilter($oldContent['field_trzs_value']);
       $node->body[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
 
       $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $oldContent['field_bevezet_value'];
@@ -161,8 +167,34 @@ class Articles extends Nodes {
     }
   }
 
-  protected function galleryFilter($content) {
+  protected function galleryFilter($text) {
+    // Find and replace arrays.
+    $search = array();
+    $replace = array();
     // [imagelist|imgid=31181|name=hy5xm3_bg_allo.jpg|align=left|title=|show=1]
 
+    // Regular expression
+    $finds = preg_match_all('/\[imagelist\|imgid=([0-9]*)[^\]]*\]/', $text, $matches);
+
+    if ($finds) {
+      foreach ($matches[0] as $id => $fullPattern) {
+        $newPattern = '';
+
+        // Select the the image data
+        $this->getNewImage->execute(array(':old_image_id' => $matches[1][$id]));
+        $newImage = $this->getNewImage->fetch(PDO::FETCH_ASSOC);
+
+        if ($newImage) {
+          $newPattern = "[mg_picker:{$newImage['gallery_nid']} fid:{$newImage['fid']}]";
+        }
+
+        // Replace with data (clear if the old image is not exist in the new DB)
+        $search[] = $fullPattern;
+        $replace[] = $newPattern;
+      }
+    }
+
+    // Replace the finded patterns with the links
+    return str_replace($search, $replace, $text);
   }
 }
