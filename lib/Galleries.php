@@ -41,7 +41,7 @@ class Galleries extends Importer {
   private function storeGalleryNodes() {
     $counter = 0;
     foreach ($this->dbhImport->query("SELECT n.* FROM imagelist_gallery_cache igc
-      INNER JOIN node n USING(nid) GROUP BY igc.nid ORDER BY igc.nid", PDO::FETCH_ASSOC) as $gallery) {
+      INNER JOIN node n USING(nid) GROUP BY igc.nid ORDER BY n.created", PDO::FETCH_ASSOC) as $gallery) {
 
       // New node objec
       $node = new stdClass();
