@@ -160,4 +160,9 @@ class Articles extends Nodes {
       }
     }
   }
+
+  protected function galleryFilter($content) {
+    // [imagelist|imgid=31181|name=hy5xm3_bg_allo.jpg|align=left|title=|show=1]
+
+  }
 }
