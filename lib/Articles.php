@@ -198,6 +198,11 @@ class Articles extends Nodes {
   }
 
   protected function mainImage(&$text) {
+    // Regular expression
+    $finds = preg_match('/\[imagelist\|imgid=([0-9]*)[^\]]*\]/', $text, $matches);
 
+    if ($finds) {
+      $text = str_replace($matches[0], '', $text);
+    }
   }
 }
