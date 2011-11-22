@@ -2,7 +2,7 @@
 /**
  * Import terms
  *
- * @todo attachment -> field
+ * @todo finalize filepaths
  */
 class Articles extends Nodes {
 
