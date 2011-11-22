@@ -33,6 +33,11 @@ class Articles extends Nodes {
    */
   private $getImageData;
 
+  /**
+   * @var PDOStatement
+   */
+  private $getAttachemtns;
+
   function __construct() {
     parent::__construct();
 
@@ -40,6 +45,7 @@ class Articles extends Nodes {
     $this->getRelatedGallery = $this->dbhConnection->prepare("SELECT g.gallery_nid FROM galleries g WHERE g.old_nid = :old_nid");
     $this->getNewImage = $this->dbhConnection->prepare("SELECT gi.* FROM gallery_images gi WHERE gi.old_image_id = :old_image_id");
     $this->getImageData = $this->dbhImport->prepare("SELECT i.* FROM imagelist i WHERE img_id = :img_id");
+    $this->getAttachemtns = $this->dbhImport->prepare("SELECT f.* FROM files f WHERE f.nid = :old_nid");
     $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
       INNER JOIN term_data td USING(tid)
       WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
@@ -122,6 +128,18 @@ class Articles extends Nodes {
       $related_gallery = $this->getRelatedGallery->fetch(PDO::FETCH_ASSOC);
       if ($related_gallery) {
         $node->field_related_gallery[LANGUAGE_NONE][0]['nid'] = $related_gallery['gallery_nid'];
+      }
+
+      // Attachments
+      $this->getAttachemtns->execute(array(':old_nid' => $oldContent['nid']));
+      $attachments = $this->getAttachemtns->fetchAll(PDO::FETCH_ASSOC);
+      foreach ($attachments as $attachment) {
+        if ($attachment['filepath']) {
+//          $attachmentFile = media_parse_to_file('sites/default/' . $attachment['filepath']);
+          $attachmentFile = media_parse_to_file('sites/default/files/tmpfiles/' . rand(1, 15) . '.txt');
+          $attachmentFile->display = 1;
+          $node->field_documents[LANGUAGE_NONE][] = (array)($attachmentFile);
+        }
       }
 
       // Taxonomy terms
