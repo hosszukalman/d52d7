@@ -14,7 +14,21 @@ class Users extends Importer {
   }
 
   public function deleteAll() {
+    // Delete from Drupal
+    $query = db_select('users', 'u');
+    $query
+      ->condition('u.uid', array(0, 1), 'NOT IN')
+      ->fields('u', array('uid'));
+    $result = $query->execute()->fetchAll();
 
+    $counter = 0;
+    foreach ($result as $user) {
+      user_delete($user->uid);
+      echo $counter++ . PHP_EOL;
+    }
+
+    // Delete from connection DB.
+    $this->dbhConnection->exec('TRUNCATE TABLE users');
   }
 
   public function execute() {
