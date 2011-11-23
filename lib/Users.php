@@ -2,8 +2,15 @@
 
 class Users extends Importer {
 
+  /**
+   * @var PDOStatement
+   */
+  private $getProfileValues;
+
   function __construct() {
     parent::__construct();
+
+    $this->getProfileValues = $this->dbhImport->prepare("SELECT pv.* FROM profile_values pv WHERE pv.uid = :old_uid");
   }
 
   public function deleteAll() {
@@ -24,6 +31,18 @@ class Users extends Importer {
       $user->access = $oldUser['access'];
       $user->login = $oldUser['login'];
       $user->status = $oldUser['status'];
+
+      // Profile fields
+      $this->getProfileValues->execute(array(':old_uid' => $oldUser['uid']));
+      $profileValues = $this->getProfileValues->fetchAll(PDO::FETCH_ASSOC);
+
+      foreach ($profileValues as $value) {
+        switch ($value['fid']) {
+          case '9':
+            $user->field_full_name[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+        }
+      }
 
       $newAccount = user_save($user, array());
 
