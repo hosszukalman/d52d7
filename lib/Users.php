@@ -1,7 +1,6 @@
 <?php
 /**
  * @todo profile fields
- * @todo use old password
  * @todo user picture
  */
 
