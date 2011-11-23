@@ -27,7 +27,7 @@ class Users extends Importer {
 
       $newAccount = user_save($user, array());
 
-      $this->dbhConnection->query("INSERT INTO user VALUES ({$oldUser['uid']}, {$newAccount->uid})");
+      $this->dbhConnection->query("INSERT INTO users VALUES ({$oldUser['uid']}, {$newAccount->uid})");
 
       echo $counter++ . PHP_EOL;
 
