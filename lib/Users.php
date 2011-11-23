@@ -50,11 +50,55 @@ class Users extends Importer {
       $this->getProfileValues->execute(array(':old_uid' => $oldUser['uid']));
       $profileValues = $this->getProfileValues->fetchAll(PDO::FETCH_ASSOC);
 
+      // Field colleption not working.
       foreach ($profileValues as $value) {
+        if ($value['value']) {
         switch ($value['fid']) {
           case '9':
+            // Telejs nev
             $user->field_full_name[LANGUAGE_NONE][0]['value'] = $value['value'];
             break;
+
+          case '6':
+            // Telefonszam
+            $user->field_telephone_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+
+          case '3':
+            // Skype
+            $user->field_skype_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+
+          case '5':
+            // ICQ
+            $user->field_icq_set[LANGUAGE_NONE][0]['value'] = (int)$value['value'];
+            break;
+
+          case '4':
+            // MSN
+            $user->field_msn_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+
+          case '2':
+            // Weboldal
+            $user->field_website_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+
+          case '8':
+            // Foglalkozas
+            $user->field_profession_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+
+          case '12':
+            // Munkahely
+            $user->field_jobs_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+
+          case '7':
+            // Tartozkodasi hely
+            $user->field_residence_set[LANGUAGE_NONE][0]['value'] = $value['value'];
+            break;
+        }
         }
       }
 
