@@ -118,6 +118,9 @@ class Users extends Importer {
 
       $newAccount = user_save($user, array());
 
+      // Users can use them old password.
+      $this->storeOldPassword($newAccount->uid, $oldUser['pass']);
+
       $this->dbhConnection->query("INSERT INTO users VALUES ({$oldUser['uid']}, {$newAccount->uid})");
 
       echo $counter++ . PHP_EOL;
@@ -126,6 +129,22 @@ class Users extends Importer {
         exit;
       }
     }
+  }
 
+  private function storeOldPassword($newUid, $oldHash) {
+    require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+    //  Hash again all current hashed passwords.
+    $has_rows = FALSE;
+    $hash_count_log2 = 11;
+    $has_rows = TRUE;
+    $newHash = user_hash_password($oldHash, $hash_count_log2);
+    if ($newHash) {
+      // Indicate an updated password.
+      $newHash  = 'U' . $newHash;
+      db_update('users')
+        ->fields(array('pass' => $newHash))
+        ->condition('uid', $newUid)
+        ->execute();
+    }
   }
 }
