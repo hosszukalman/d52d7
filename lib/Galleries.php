@@ -12,7 +12,8 @@ class Galleries extends Importer {
 
     $this->getImages = $this->dbhImport->prepare("SELECT igc.*, i.image FROM imagelist_gallery_cache igc
       INNER JOIN imagelist i USING(img_id)
-      WHERE igc.nid = :gallery_nid");
+      WHERE igc.nid = :gallery_nid
+      GROUP BY igc.img_id");
   }
 
   public function deleteAll() {
@@ -39,15 +40,15 @@ class Galleries extends Importer {
   }
 
   private function storeGalleryNodes() {
+    // Fucked: 6443, 6622, 6588, 12935, 19439
     $counter = 0;
     foreach ($this->dbhImport->query("SELECT n.* FROM imagelist_gallery_cache igc
-      INNER JOIN node n USING(nid) GROUP BY igc.nid ORDER BY n.created", PDO::FETCH_ASSOC) as $gallery) {
+      INNER JOIN node n USING(nid) WHERE igc.nid NOT IN (6443, 6622, 6588, 19439) GROUP BY igc.nid ORDER BY n.created LIMIT 10041, 3000", PDO::FETCH_ASSOC) as $gallery) {
 
-      // New node objec
       $node = new stdClass();
 
       // Base information
-      $node->title = $gallery['title'];
+      $node->title = truncate_utf8($gallery['title'], 200);
       $node->type = 'media_gallery';
       $node->language = LANGUAGE_NONE;
       $node->status = 1;
@@ -72,17 +73,20 @@ class Galleries extends Importer {
       $store_images = array();
 
       foreach ($images as $image) {
-//        $file = media_parse_to_file('sites/default/' . $gallery['image']);
-        $file = media_parse_to_file('sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg');
-        $node->media_gallery_media[LANGUAGE_NONE][] = array(
-          'fid' => $file->fid,
-          'title' => $image['title'],
-          'data' => '',
-        );
-        $store_images[] = array(
-          'old_image_id' => $image['img_id'],
-          'fid' => $file->fid,
-        );
+        if ($image['image'] && file_exists('sites/default/' . $image['image'])) {
+          echo 'image:' . $image['image'] . PHP_EOL;
+          $file = media_parse_to_file('sites/default/' . $image['image']);
+//        $file = media_parse_to_file('sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg');
+          $node->media_gallery_media[LANGUAGE_NONE][] = array(
+            'fid' => $file->fid,
+            'title' => truncate_utf8($image['title'], 200),
+            'data' => '',
+          );
+          $store_images[] = array(
+            'old_image_id' => $image['img_id'],
+            'fid' => $file->fid,
+          );
+        }
       }
 
       node_save($node);
@@ -95,12 +99,12 @@ class Galleries extends Importer {
         $this->dbhConnection->query("INSERT INTO gallery_images VALUES ({$stored['old_image_id']}, {$stored['fid']}, {$node->nid})");
       }
 
+      echo 'Old NID:' . $gallery['nid'] . ' New NID:' . $node->nid . ' - ';
       echo $counter++ . PHP_EOL;
 
-      if ($counter >= 20) {
-        exit;
-      }
+//      if ($counter >= 20) {
+//        exit;
+//      }
     }
   }
-
 }
