@@ -86,11 +86,12 @@ class Articles extends Nodes {
 
   public function execute() {
     $counter = 0;
+    // FUcked: 6443
     foreach ($this->dbhImport->query("SELECT n.*, cft.field_trzs_value, cfb.field_bevezet_value, cfea.field_eng_abstract_value FROM node n
       LEFT JOIN content_field_trzs cft USING(vid)
       LEFT JOIN content_field_bevezet cfb USING(vid)
       LEFT JOIN content_field_eng_abstract cfea USING(vid)
-      WHERE n.type = 'normal_tartalom' ORDER BY n.created", PDO::FETCH_ASSOC) as $oldContent) {
+      WHERE n.type = 'normal_tartalom' ORDER BY n.created LIMIT 4296 , 10000", PDO::FETCH_ASSOC) as $oldContent) {
 
       // New node objec
       $node = new stdClass();
@@ -118,7 +119,7 @@ class Articles extends Nodes {
       $node->field_eng_summory[LANGUAGE_NONE][0]['value'] = $oldContent['field_eng_abstract_value'];
       $node->field_eng_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
 
-      if ($mainImageUrl) {
+      if ($mainImageUrl && file_exists($mainImageUrl)) {
         $mainImageFile = media_parse_to_file($mainImageUrl);
         $node->field_leading_picture[LANGUAGE_NONE][0] = (array)($mainImageFile);
       }
@@ -189,11 +190,12 @@ class Articles extends Nodes {
 
       $this->saveNodeToConnectionTable($oldContent['nid'], $node->nid);
 
+      echo 'Old NID:' . $oldContent['nid'] . ' New NID:' . $node->nid . ' - ';
       echo $counter++ . PHP_EOL;
 
-      if ($counter >= 20) {
-        exit;
-      }
+//      if ($counter >= 20) {
+//        exit;
+//      }
     }
   }
 
@@ -239,8 +241,8 @@ class Articles extends Nodes {
       $imageData = $this->getImageData->fetch(PDO::FETCH_ASSOC);
 
       if ($imageData) {
-//        return 'sites/default/' . $imageData['image'];
-        return 'sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg';
+        return 'sites/default/' . $imageData['image'];
+//        return 'sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg';
       }
     }
 
