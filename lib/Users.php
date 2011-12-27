@@ -131,6 +131,23 @@ class Users extends Importer {
     }
   }
 
+  protected function saveFieldCollectionEntity($fieldName, $bundle, $value, $user) {
+    $values = array(
+      'field_name' => $fieldName,
+      $bundle => array(
+        LANGUAGE_NONE => array(array('value' => $value)),
+      ),
+      'field_public' => array(
+        LANGUAGE_NONE => array(array('value' => 1)),
+      ),
+    );
+    $entity = entity_create('field_collection_item', $values);
+    $entity->setHostEntity('user', $user);
+    $entity->save();
+
+    return $entity->item_id;
+  }
+
   private function storeOldPassword($newUid, $oldHash) {
     require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
     //  Hash again all current hashed passwords.
