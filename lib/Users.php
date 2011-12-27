@@ -126,6 +126,7 @@ class Users extends Importer {
 
       $this->dbhConnection->query("INSERT INTO users VALUES ({$oldUser['uid']}, {$newAccount->uid})");
 
+      echo 'Old UID:' . $oldUser['uid'] . ' New UID:' . $newAccount->uid . ' - ';
       echo $counter++ . PHP_EOL;
 
       if ($counter >= 20) {
