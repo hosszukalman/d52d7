@@ -56,56 +56,59 @@ class Users extends Importer {
       $profileValues = $this->getProfileValues->fetchAll(PDO::FETCH_ASSOC);
 
       // Field colleption not working.
-//      foreach ($profileValues as $value) {
-//        if ($value['value']) {
-//          switch ($value['fid']) {
-//            case '9':
-//              // Telejs nev
-//              $user->field_full_name[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '6':
-//              // Telefonszam
-//              $user->field_telephone_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '3':
-//              // Skype
-//              $user->field_skype_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '5':
-//              // ICQ
-//              $user->field_icq_set[LANGUAGE_NONE][0]['value'] = (int)$value['value'];
-//              break;
-//
-//            case '4':
-//              // MSN
-//              $user->field_msn_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '2':
-//              // Weboldal
-//              $user->field_website_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '8':
-//              // Foglalkozas
-//              $user->field_profession_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '12':
-//              // Munkahely
-//              $user->field_jobs_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//
-//            case '7':
-//              // Tartozkodasi hely
-//              $user->field_residence_set[LANGUAGE_NONE][0]['value'] = $value['value'];
-//              break;
-//          }
-//        }
-//      }
+      foreach ($profileValues as $value) {
+        if ($value['value']) {
+          switch ($value['fid']) {
+            case '9':
+              // Telejs nev
+              $user->field_full_name[LANGUAGE_NONE][0]['value'] = $value['value'];
+              break;
+
+            case '6':
+              // Telefonszam
+
+              $user->field_telephone_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_telephone_set', 'field_telephone', $value['value'], $user);
+              break;
+
+            case '3':
+              // Skype
+
+              $user->field_skype_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_skype_set', 'field_skype', $value['value'], $user);
+              break;
+
+            case '5':
+              // ICQ
+
+              $user->field_icq_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_icq_set', 'field_icq', $value['value'], $user);
+              break;
+
+            case '4':
+              // MSN
+              $user->field_msn_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_msn_set', 'field_msn', $value['value'], $user);
+              break;
+
+            case '2':
+              // Weboldal
+              $user->field_website_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_website_set', 'field_website', $value['value'], $user);
+              break;
+
+            case '8':
+              // Foglalkozas
+              $user->field_profession_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_profession_set', 'field_profession', $value['value'], $user);
+              break;
+
+            case '12':
+              // Munkahely
+              $user->field_jobs_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_jobs_set', 'field_jobs', $value['value'], $user);
+              break;
+
+            case '7':
+              // Tartozkodasi hely
+              $user->field_residence_set[LANGUAGE_NONE][0]['value'] = $this->saveFieldCollectionEntity('field_residence_set', 'field_residence', $value['value'], $user);
+              break;
+          }
+        }
+      }
 
       // Not working
       // Image
