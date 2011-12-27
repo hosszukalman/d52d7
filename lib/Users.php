@@ -110,16 +110,18 @@ class Users extends Importer {
         }
       }
 
-      // Not working
-      // Image
-//      if ($oldUser['picture']) {
-//        echo $oldUser['name'] . ' - ' . $oldUser['picture'] . PHP_EOL;
-////        $profileImage = media_parse_to_file('sites/default/' . $oldUser['picture']);
-//        $profileImage = media_parse_to_file('sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg');
-//        $user->picture = $profileImage;
-//      }
 
       $newAccount = user_save($user, array());
+
+      // Image
+      if ($oldUser['picture']) {
+        echo $oldUser['name'] . ' - ' . $oldUser['picture'] . PHP_EOL;
+        $profileImage = media_parse_to_file('sites/default/' . $oldUser['picture']);
+//        $profileImage = media_parse_to_file('sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg');
+        $user->picture = $profileImage;
+      }
+
+      user_save($user, array());
 
       // Users can use them old password.
       $this->storeOldPassword($newAccount->uid, $oldUser['pass']);
