@@ -36,6 +36,7 @@ class Users extends Importer {
   }
 
   public function execute() {
+    module_load_include('inc', 'entity', 'includes/entity.controller');
     $counter = 0;
     foreach ($this->dbhImport->query("SELECT u.* FROM users u WHERE u.uid NOT IN (0, 1) ORDER BY u.uid", PDO::FETCH_ASSOC) as $oldUser) {
 
