@@ -119,9 +119,9 @@ class Users extends Importer {
         $profileImage = media_parse_to_file('sites/default/' . $oldUser['picture']);
 //        $profileImage = media_parse_to_file('sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg');
         $user->picture = $profileImage;
+        user_save($user, array());
       }
 
-      user_save($user, array());
 
       // Users can use them old password.
       $this->storeOldPassword($newAccount->uid, $oldUser['pass']);
