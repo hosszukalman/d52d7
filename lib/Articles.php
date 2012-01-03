@@ -11,24 +11,12 @@ class Articles extends Nodes {
    */
   private $getRelatedGallery;
 
-  /**
-   * @var PDOStatement
-   */
-  private $getNewImage;
-
-  /**
-   * @var PDOStatement
-   */
-  private $getImageData;
-
   function __construct() {
     parent::__construct();
 
     $this->prepareAttachmentQuery();
 
     $this->getRelatedGallery = $this->dbhConnection->prepare("SELECT g.gallery_nid FROM galleries g WHERE g.old_nid = :old_nid");
-    $this->getNewImage = $this->dbhConnection->prepare("SELECT gi.* FROM gallery_images gi WHERE gi.old_image_id = :old_image_id");
-    $this->getImageData = $this->dbhImport->prepare("SELECT i.* FROM imagelist i WHERE img_id = :img_id");
 
     $this->prepareTerms('normal_tartalom');
   }

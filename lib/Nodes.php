@@ -21,6 +21,23 @@ class Nodes extends Importer {
    */
   protected $getAttachemtns;
 
+  /**
+   * @var PDOStatement
+   */
+  protected $getNewImage;
+
+  /**
+   * @var PDOStatement
+   */
+  protected $getImageData;
+
+  public function __construct() {
+    parent::__construct();
+
+    $this->getNewImage = $this->dbhConnection->prepare("SELECT gi.* FROM gallery_images gi WHERE gi.old_image_id = :old_image_id");
+    $this->getImageData = $this->dbhImport->prepare("SELECT i.* FROM imagelist i WHERE img_id = :img_id");
+  }
+
   public function deleteAll() {
 
   }
