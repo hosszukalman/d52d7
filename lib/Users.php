@@ -131,9 +131,9 @@ class Users extends Importer {
       echo 'Old UID:' . $oldUser['uid'] . ' New UID:' . $newAccount->uid . ' - ';
       echo $counter++ . PHP_EOL;
 
-      if ($counter >= 20) {
-        exit;
-      }
+//      if ($counter >= 20) {
+//        exit;
+//      }
     }
   }
 
