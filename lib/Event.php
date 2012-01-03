@@ -10,7 +10,20 @@ class Event extends Nodes {
   }
 
   public function deleteAll() {
+    $query = db_select('node', 'n');
+    $query
+      ->condition('n.type', 'esemeny')
+      ->fields('n', array('nid'));
+    $result = $query->execute()->fetchAll();
 
+    $counter = 0;
+    foreach ($result as $node) {
+      $this->dbhConnection->exec('DELETE FROM nodes WHERE new_nid = ' . $node->nid);
+      node_delete($node->nid);
+      echo $counter++ . PHP_EOL;
+    }
+
+    // Delete from connection DB.
   }
 
   public function execute() {
