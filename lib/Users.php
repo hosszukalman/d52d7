@@ -114,7 +114,7 @@ class Users extends Importer {
       $newAccount = user_save($user, array());
 
       // Image
-      if ($oldUser['picture']) {
+      if ($oldUser['picture'] && file_exists('sites/default/' . $oldUser['picture'])) {
         echo $oldUser['name'] . ' - ' . $oldUser['picture'] . PHP_EOL;
         $profileImage = media_parse_to_file('sites/default/' . $oldUser['picture']);
 //        $profileImage = media_parse_to_file('sites/default/files/tmpimages/' . rand(1, 16) . '.jpeg');
