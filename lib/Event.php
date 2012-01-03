@@ -122,9 +122,9 @@ class Event extends Nodes {
       echo 'Old NID:' . $oldContent['nid'] . ' New NID:' . $node->nid . ' - ';
       echo $counter++ . PHP_EOL;
 
-      if ($counter >= 20) {
-        exit;
-      }
+//      if ($counter >= 20) {
+//        exit;
+//      }
     }
 
   }
