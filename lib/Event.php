@@ -30,9 +30,10 @@ class Event extends Nodes {
 
     $counter = 0;
 
-    foreach ($this->dbhImport->query("SELECT n.*, nr.body, cfb.field_bevezet_value FROM node n
+    foreach ($this->dbhImport->query("SELECT n.*, nr.body, cfb.field_bevezet_value, cfed.field_esemeny_date_value, cfed.field_esemeny_date_value2 FROM node n
       LEFT JOIN node_revisions nr USING(vid)
       LEFT JOIN content_field_bevezet cfb USING(vid)
+      LEFT JOIN content_field_esemeny_date cfed USING(vid)
       WHERE n.type = 'esemeny' ORDER BY n.created", PDO::FETCH_ASSOC) as $oldContent) {
 
       // New node objec
@@ -57,6 +58,9 @@ class Event extends Nodes {
 
       $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $summary;
       $node->field_hun_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
+
+      $node->field_event_date[LANGUAGE_NONE][0]['value'] = strtotime($oldContent['field_esemeny_date_value']);
+      $node->field_event_date[LANGUAGE_NONE][0]['value2'] = strtotime($oldContent['field_esemeny_date_value2']);
 
       if ($mainImageUrl && file_exists($mainImageUrl)) {
         $mainImageFile = media_parse_to_file($mainImageUrl);
