@@ -4,6 +4,23 @@
  */
 class Nodes extends Importer {
 
+  protected $termMap;
+
+  /**
+   * @var PDOStatement
+   */
+  protected $getNewTerms;
+
+  /**
+   * @var PDOStatement
+   */
+  protected $getOldTerms;
+
+  /**
+   * @var PDOStatement
+   */
+  private $getAttachemtns;
+
   public function deleteAll() {
 
   }
