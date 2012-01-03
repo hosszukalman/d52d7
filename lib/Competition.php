@@ -1,6 +1,6 @@
 <?php
 
-class Competition extends Importer {
+class Competition extends Nodes {
 
   function __construct() {
     parent::__construct();
