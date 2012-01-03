@@ -55,8 +55,8 @@ class Event extends Nodes {
       $summary = $oldContent['body'];
       $mainImageUrl = $this->mainImage($summary);
 
-//      $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $summary;
-//      $node->field_hun_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
+      $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $summary;
+      $node->field_hun_summory[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
 
       if ($mainImageUrl && file_exists($mainImageUrl)) {
         $mainImageFile = media_parse_to_file($mainImageUrl);
