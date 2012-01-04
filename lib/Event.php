@@ -53,7 +53,7 @@ class Event extends Nodes {
       $node->body[LANGUAGE_NONE][0]['value'] = $this->galleryFilter($oldContent['body']);
       $node->body[LANGUAGE_NONE][0]['format'] = 'wysiwyg';
 
-      $summary = $oldContent['body'];
+      $summary = $oldContent['field_bevezet_value'];
       $mainImageUrl = $this->mainImage($summary);
 
       $node->field_hun_summory[LANGUAGE_NONE][0]['value'] = $summary;
