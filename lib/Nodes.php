@@ -31,6 +31,8 @@ class Nodes extends Importer {
    */
   protected $getImageData;
 
+  protected $type;
+
   public function __construct() {
     parent::__construct();
 
@@ -50,7 +52,7 @@ class Nodes extends Importer {
     $this->dbhConnection->query("INSERT INTO nodes VALUES ($oldNid, $newNid)");
   }
 
-  protected function prepareTerms($type) {
+  protected function prepareTerms() {
     $this->getNewTerms = $this->dbhConnection->prepare("SELECT t.new_tid FROM terms t WHERE t.old_tid = :old_tid");
     $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
       INNER JOIN term_data td USING(tid)
@@ -60,7 +62,7 @@ class Nodes extends Importer {
     foreach ($this->dbhImport->query("SELECT td.* FROM node n
       RIGHT JOIN term_node tn USING(nid)
       RIGHT JOIN term_data td ON (tn.tid = td.tid)
-      WHERE n.type = '$type'
+      WHERE n.type = '$this->type'
       GROUP BY td.tid ORDER BY n.created", PDO::FETCH_ASSOC) as $term) {
 //      WHERE n.type = '$type' AND td.vid IN (13, 2, 8, 7, 14)
 
