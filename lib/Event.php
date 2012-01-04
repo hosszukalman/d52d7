@@ -112,6 +112,13 @@ class Event extends Nodes {
               'tid' => $this->termMap[$term['tid']],
             );
             break;
+
+          case 27:
+            // Helyszín
+            $node->field_term_location[LANGUAGE_NONE][] = array(
+              'tid' => $this->termMap[$term['tid']],
+            );
+            break;
         }
       }
 
