@@ -54,13 +54,15 @@ class Nodes extends Importer {
     $this->getNewTerms = $this->dbhConnection->prepare("SELECT t.new_tid FROM terms t WHERE t.old_tid = :old_tid");
     $this->getOldTerms = $this->dbhImport->prepare("SELECT td.* FROM term_node tn
       INNER JOIN term_data td USING(tid)
-      WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
+      WHERE tn.nid = :nid");
+//      WHERE tn.nid = :nid AND td.vid IN (13, 2, 8, 7, 14)");
 
     foreach ($this->dbhImport->query("SELECT td.* FROM node n
       RIGHT JOIN term_node tn USING(nid)
       RIGHT JOIN term_data td ON (tn.tid = td.tid)
-      WHERE n.type = '$type' AND td.vid IN (13, 2, 8, 7, 14)
+      WHERE n.type = '$type'
       GROUP BY td.tid ORDER BY n.created", PDO::FETCH_ASSOC) as $term) {
+//      WHERE n.type = '$type' AND td.vid IN (13, 2, 8, 7, 14)
 
       $this->getNewTerms->execute(array(':old_tid' => $term['tid']));
       $result = $this->getNewTerms->fetch(PDO::FETCH_ASSOC);
